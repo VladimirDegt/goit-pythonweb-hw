@@ -2,24 +2,11 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "3000:3000"
     container_name: web
     restart: always
-    networks:
-      - web_network
-
-  postgres:
-    image: postgres
-    container_name: mydb
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 567234
-      POSTGRES_DB: hw02
-    ports:
-      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./storage:/app/storage
     networks:
       - web_network
 
@@ -28,4 +15,4 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  storage:

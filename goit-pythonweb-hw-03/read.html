@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Read Messages</title>
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        padding-top: 30px;
+      }
+
+      h1 {
+        margin-bottom: 30px;
+      }
+
+      .message-card {
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .message-card .timestamp {
+        font-size: 0.9rem;
+        color: #888;
+      }
+
+      .message-card .username {
+        font-weight: bold;
+        color: #0056b3;
+      }
+
+      .message-card .message {
+        font-size: 1.1rem;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            <img src="/logo.png" alt="logo" />
+          </a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/message">Send message</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/read">Read messages</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h1 class="text-center">All Messages</h1>
+
+      {% if messages %}
+        <div class="message-list">
+          {% for timestamp, message in messages.items() %}
+            <div class="message-card">
+              <p class="timestamp">{{ timestamp }}</p>
+              <p class="username">{{ message.username }}</p>
+              <p class="message">{{ message.message }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-center">No messages available.</p>
+      {% endif %}
+    </main>
+  </body>
+</html>

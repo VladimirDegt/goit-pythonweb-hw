@@ -6,6 +6,7 @@ import logging
 import json
 from typing import Dict
 from datetime import datetime
+from jinja2 import Template
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,6 +18,8 @@ class HttpHandler(BaseHTTPRequestHandler):
             self.send_html_file('index.html')
         elif pr_url.path == '/message':
             self.send_html_file('message.html')
+        elif pr_url.path == '/read':
+            self.show_messages()
         else:
             if pathlib.Path().joinpath(pr_url.path[1:]).exists():
                 self.send_static()
@@ -56,7 +59,7 @@ class HttpHandler(BaseHTTPRequestHandler):
             self.wfile.write(file.read())
 
     def store_data(self, data: Dict[str, str]) -> None:
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        timestamp = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         data_to_save = {timestamp: data}
 
         storage_dir = pathlib.Path('storage')
@@ -74,6 +77,26 @@ class HttpHandler(BaseHTTPRequestHandler):
 
         with open(file_path, 'w') as f:
             json.dump(existing_data, f, indent=4)
+
+    def show_messages(self) -> None:
+        storage_dir = pathlib.Path('storage')
+        file_path = storage_dir / 'data.json'
+
+        try:
+            with open(file_path, 'r') as f:
+                messages = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            messages = {}
+
+        with open('read.html', 'r') as f:
+            template = Template(f.read())
+
+        rendered_html = template.render(messages=messages)
+
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        self.wfile.write(rendered_html.encode('utf-8'))
 
 
 def run(server_class=HTTPServer, handler_class=HttpHandler) -> None:
